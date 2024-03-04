@@ -1,0 +1,3 @@
+MONGO_URI=mongodb+srv://mukultotla:<password>@cluster0.0iexil7.mongodb.net/Wallet-Backend
+JWT_SECRET=<jwt_secret>
+PORT=8080
