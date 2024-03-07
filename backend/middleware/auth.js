@@ -9,7 +9,6 @@ const authMiddleware = async (req, res, next) => {
       const token = req.headers.authorization.split(" ")[1];
       const payload = await jwt.verify(token, process.env.JWT_SECRET);
       req.userId = payload.userId;
-      console.log(req.user);
     } else {
       throw new Error("Missing required auth headers");
     }

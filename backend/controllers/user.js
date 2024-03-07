@@ -76,9 +76,38 @@ const signIn = async (req, res) => {
     });
   }
 };
+const updateUser = async (req, res) => {
+  try {
+    const { password, name } = req.body;
+    const updateUserSchema = z.object({
+      password: z.string().min(6).optional(),
+      name: z.string().optional(),
+    });
+    const { success } = updateUserSchema.safeParse(req.body);
+    if (!success) {
+      return res.status(400).json({
+        msg: "Incorrect input value for password/name",
+      });
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: req.userId },
+      { password, name },
+      { new: true }
+    );
+    return res.status(200).json({
+      user: updatedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Something went wrong while updating the user info",
+      error: error.message,
+    });
+  }
+};
+
 const generateToken = async (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };
-module.exports = { signUp, signIn };
+module.exports = { signUp, signIn, updateUser };
