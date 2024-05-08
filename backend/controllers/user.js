@@ -105,9 +105,28 @@ const updateUser = async (req, res) => {
   }
 };
 
+const userList = async (req, res) => {
+  try {
+    const filterName = req.query.filter;
+    let userList = [];
+    if(filterName) {
+      userList = await User.find({name:{'$regex' : filterName, '$options' : 'i'}});
+    } else {
+      userList = await User.find();
+    }
+    return res.status(200).json({
+      userList
+    })
+  } catch(error) {
+    return res.status(500).json({
+      msg: "Something went wrong while fetching user list",
+      error: error.message,
+    });
+  }
+}
 const generateToken = async (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };
-module.exports = { signUp, signIn, updateUser };
+module.exports = { signUp, signIn, updateUser, userList };
