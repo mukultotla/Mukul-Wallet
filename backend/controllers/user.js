@@ -1,5 +1,6 @@
 const { z } = require("zod");
 const User = require("../models/User");
+const Account = require("../models/Account")
 const jwt = require("jsonwebtoken");
 const signUp = async (req, res) => {
   try {
@@ -28,10 +29,20 @@ const signUp = async (req, res) => {
       password: password,
       name: name,
     });
-    const token = await generateToken(user._id);
+    const userId = user._id;
+
+    const initialBalance = ( 1 + Math.random() * 10000).toFixed(2);
+    const initializeBankAccount =  await Account.create({
+      userId,
+      balance: initialBalance
+    })
+
+    const token = await generateToken(userId);
+
     return res.status(200).json({
       msg: "User created successfully",
       token: token,
+      balance: initializeBankAccount
     });
   } catch (error) {
     console.log(error);
